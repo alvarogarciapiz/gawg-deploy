@@ -2,7 +2,7 @@ name: 'GAWG Validate Build'
 description: 'This actiosn belogns to the GAWG workflow and is used to validate the configurations, Dockerfile, secrets, deployment, and runner.'
 author: Álvaro García Pizarro
 branding:
-  icon: 'settings'
+  icon: 'package'
   color: 'gray-dark'
 
 inputs:
