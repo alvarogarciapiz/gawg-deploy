@@ -31,7 +31,6 @@ outputs:
 
 runs:
   using: "composite"
-  id: test
   steps:
     - name: Test
       shell: bash
