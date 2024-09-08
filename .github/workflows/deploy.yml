@@ -55,6 +55,13 @@ jobs:
         with:
           name: ${{ inputs.artifact-name }}
 
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            Dockerfile
+          sparse-checkout-cone-mode: false
+
       - name: Show artifact files
         shell: bash
         run: |
