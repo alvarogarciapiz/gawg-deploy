@@ -155,3 +155,23 @@ jobs:
         run: |
           echo "Skipping deployment. To deploy, set the deployment environment to a valid value."
           exit 0
+  
+  none-deployment10:
+    if: ${{ inputs.deployment == 'none' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Skipping deployment
+        shell: bash
+        run: |
+          echo "Skipping deployment. To deploy, set the deployment environment to a valid value."
+          exit 0
+
+  none-deployment11:
+    if: ${{ inputs.deployment == 'none' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Skipping deployment
+        shell: bash
+        run: |
+          echo "Skipping deployment. To deploy, set the deployment environment to a valid value."
+          exit 0
