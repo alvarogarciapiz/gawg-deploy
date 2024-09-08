@@ -48,7 +48,7 @@ jobs:
         run: |
           echo "Deploying to Docker Hub"
           echo "The selected deployment is DOCKER-HUB."
-          echo "To deploy to Docker Hub, make sure you have a Dockerfile in the artifact."
+          echo "To deploy to Docker Hub, make sure you have a Dockerfile in the root of your repository."
 
       - name: Checkout code
         uses: actions/checkout@v4
@@ -56,13 +56,6 @@ jobs:
           sparse-checkout: |
             Dockerfile
           sparse-checkout-cone-mode: false
-
-      - name: Show artifact files
-        shell: bash
-        run: |
-          echo "Make sure the artifact files are correct and there is a Dockerfile inside it."
-          echo "Files in artifact:"
-          ls -lah
 
       - name: Download artifact
         uses: actions/download-artifact@v4
@@ -114,4 +107,4 @@ jobs:
       - name: Show Docker images
         run: |
           echo "Docker image pushed:"
-          docker images
+          echo "https://hub.docker.com/r/${{ secrets.DOCKER_USERNAME }}/${{ inputs.artifact-name }}:latest"
