@@ -65,7 +65,7 @@ jobs:
       - name: Show artifact files
         shell: bash
         run: |
-          echo "Make sure the artifact files are correct and there is a Dockerfile inside it."
+          echo "⚠️ Make sure the artifact files are correct and there is a Dockerfile inside it."
           echo "Files in artifact:"
           ls -lah
       
@@ -73,8 +73,8 @@ jobs:
         shell: bash
         run: |
           if [ -z "${{ secrets.DOCKER_USERNAME }}" ]; then
-            echo "DOCKER_USERNAME is not set. To set it, go to your repository settings > Secrets > New repository secret"
-            echo "DOCKER_USERNAME is not set. To set it, go to your repository settings > Secrets > New repository secret" >> $GITHUB_STEP_SUMMARY
+            echo "❌ DOCKER_USERNAME is not set. To set it, go to your repository settings > Secrets > New repository secret"
+            echo "❌ DOCKER_USERNAME is not set. To set it, go to your repository settings > Secrets > New repository secret" >> $GITHUB_STEP_SUMMARY
             exit 1
           fi
 
@@ -82,8 +82,8 @@ jobs:
         shell: bash
         run: |
           if [ -z "${{ secrets.DOCKER_PASSWORD }}" ]; then
-            echo "DOCKER_PASSWORD is not set. To set it, go to your repository settings > Secrets > New repository secret"
-            echo "DOCKER_PASSWORD is not set. To set it, go to your repository settings > Secrets > New repository secret" >> $GITHUB_STEP_SUMMARY
+            echo "❌ DOCKER_PASSWORD is not set. To set it, go to your repository settings > Secrets > New repository secret"
+            echo "❌ DOCKER_PASSWORD is not set. To set it, go to your repository settings > Secrets > New repository secret" >> $GITHUB_STEP_SUMMARY
             exit 1
           fi
 
@@ -94,17 +94,26 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build Docker image
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/${{ inputs.artifact-name }}:latest .
+        shell: bash
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/${{ inputs.artifact-name }}:latest .
 
       - name: Show Docker images
+        shell: bash
         run: |
           echo "Docker image built:"
           docker images
 
       - name: Push Docker image
+        shell: bash
         run: docker push ${{ secrets.DOCKER_USERNAME }}/${{ inputs.artifact-name }}:latest
 
-      - name: Show Docker images
+      - name: Summary
+        shell: bash
         run: |
-          echo "Docker image pushed:"
-          echo "https://hub.docker.com/r/${{ secrets.DOCKER_USERNAME }}/${{ inputs.artifact-name }}:latest"
+          echo "## Deployment summary"
+          echo "## Deployment summary" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Docker image pushed to Docker Hub."
+          echo "✅ Docker image pushed to Docker Hub." >> $GITHUB_STEP_SUMMARY
+          echo "The image ${{ inputs.artifact-name }}:latest is now available in Docker Hub."
+          echo "The image ${{ inputs.artifact-name }}:latest is now available in Docker Hub." >> $GITHUB_STEP_SUMMARY
