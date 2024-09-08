@@ -1,0 +1,41 @@
+name: Gawg Deploy workflow
+
+on:
+  workflow_call:
+    inputs:
+      artifact-name:
+        required: true
+        description: 'The name of the artifact to deploy'
+        type: string
+      docker:
+        required: true
+        description: 'Whether to deploy the artifact as a Docker container'
+        type: boolean
+      self-hosted-runner:
+        required: true
+        description: 'Whether to deploy the artifact using a self-hosted runner'
+        type: boolean
+      deployment:
+        required: true
+        description: 'The deployment environment'
+        type: string
+      config-json:
+        required: true
+        description: 'The JSON configuration for the deployment'
+        type: string
+    secrets:
+      token:
+        required: true
+
+jobs:
+  skip:
+    if: ${{ inputs.deployment == 'none' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Skipping deployment
+        shell: bash
+        run: |
+          echo "Skipping deployment. To deploy, set the deployment environment to a valid value."
+          exit 0
