@@ -76,3 +76,82 @@ jobs:
 
       - name: Push Docker image
         run: docker push ${{ secrets.DOCKER_USERNAME }}/${{ inputs.artifact-name }}:latest
+
+
+  none-deployment2:
+    if: ${{ inputs.deployment == 'none' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Skipping deployment
+        shell: bash
+        run: |
+          echo "Skipping deployment. To deploy, set the deployment environment to a valid value."
+          exit 0
+  
+  none-deployment3:
+    if: ${{ inputs.deployment == 'none' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Skipping deployment
+        shell: bash
+        run: |
+          echo "Skipping deployment. To deploy, set the deployment environment to a valid value."
+          exit 0
+  none-deployment4:
+    if: ${{ inputs.deployment == 'none' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Skipping deployment
+        shell: bash
+        run: |
+          echo "Skipping deployment. To deploy, set the deployment environment to a valid value."
+          exit 0
+  none-deployment5:
+    if: ${{ inputs.deployment == 'none' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Skipping deployment
+        shell: bash
+        run: |
+          echo "Skipping deployment. To deploy, set the deployment environment to a valid value."
+          exit 0
+  none-deployment6:
+    if: ${{ inputs.deployment == 'none' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Skipping deployment
+        shell: bash
+        run: |
+          echo "Skipping deployment. To deploy, set the deployment environment to a valid value."
+          exit 0
+
+  none-deployment7:
+    if: ${{ inputs.deployment == 'none' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Skipping deployment
+        shell: bash
+        run: |
+          echo "Skipping deployment. To deploy, set the deployment environment to a valid value."
+          exit 0
+
+
+  none-deployment8:
+    if: ${{ inputs.deployment == 'none' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Skipping deployment
+        shell: bash
+        run: |
+          echo "Skipping deployment. To deploy, set the deployment environment to a valid value."
+          exit 0
+
+  none-deployment9:
+    if: ${{ inputs.deployment == 'none' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Skipping deployment
+        shell: bash
+        run: |
+          echo "Skipping deployment. To deploy, set the deployment environment to a valid value."
+          exit 0
