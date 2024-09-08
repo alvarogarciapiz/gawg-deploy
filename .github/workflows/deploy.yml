@@ -28,14 +28,51 @@ on:
     #     required: true
 
 jobs:
-  skip:
+  none-deployment:
     if: ${{ inputs.deployment == 'none' }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
       - name: Skipping deployment
         shell: bash
         run: |
           echo "Skipping deployment. To deploy, set the deployment environment to a valid value."
           exit 0
+  
+  docker-hub:
+    if: ${{ inputs.deployment == 'docker' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.artifact-name }}
+
+      - name: Debug
+        shell: bash
+        run: ls -lah
+      
+      - name: Check Docker Credentials
+        shell: bash
+        run: |
+          if [ -z "${{ secrets.DOCKER_USERNAME }}" ]; then
+            echo "DOCKER_USERNAME is not set. To set it, go to your repository settings > Secrets > New repository secret"
+            echo "DOCKER_USERNAME is not set. To set it, go to your repository settings > Secrets > New repository secret" >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi
+          if [ -z "${{ secrets.DOCKER_PASSWORD }}" ]; then
+            echo "DOCKER_PASSWORD is not set. To set it, go to your repository settings > Secrets > New repository secret"
+            echo "DOCKER_PASSWORD is not set. To set it, go to your repository settings > Secrets > New repository secret" >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build Docker image
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/${{ inputs.artifact-name }}:latest .
+
+      - name: Push Docker image
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/${{ inputs.artifact-name }}:latest
