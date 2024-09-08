@@ -39,7 +39,7 @@ jobs:
           exit 0
   
   docker-hub:
-    if: ${{ inputs.deployment == 'docker' }}
+    if: ${{ inputs.deployment == 'dockerhub' }}
     runs-on: ubuntu-latest
     steps:
 
