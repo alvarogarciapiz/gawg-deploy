@@ -42,16 +42,27 @@ jobs:
     if: ${{ inputs.deployment == 'docker' }}
     runs-on: ubuntu-latest
     steps:
+
+      - name: Deploy to Docker Hub
+        shell: bash
+        run: |
+          echo "Deploying to Docker Hub"
+          echo "The selected deployment is DOCKER-HUB."
+          echo "To deploy to Docker Hub, make sure you have a Dockerfile in the artifact."
+
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
           name: ${{ inputs.artifact-name }}
 
-      - name: Debug
+      - name: Show artifact files
         shell: bash
-        run: ls -lah
+        run: |
+          echo "Make sure the artifact files are correct and there is a Dockerfile inside it."
+          echo "Files in artifact:"
+          ls -lah
       
-      - name: Check Docker Credentials
+      - name: Check Docker Username Credentials
         shell: bash
         run: |
           if [ -z "${{ secrets.DOCKER_USERNAME }}" ]; then
@@ -59,6 +70,10 @@ jobs:
             echo "DOCKER_USERNAME is not set. To set it, go to your repository settings > Secrets > New repository secret" >> $GITHUB_STEP_SUMMARY
             exit 1
           fi
+
+      - name: Check Docker Password Credentials
+        shell: bash
+        run: |
           if [ -z "${{ secrets.DOCKER_PASSWORD }}" ]; then
             echo "DOCKER_PASSWORD is not set. To set it, go to your repository settings > Secrets > New repository secret"
             echo "DOCKER_PASSWORD is not set. To set it, go to your repository settings > Secrets > New repository secret" >> $GITHUB_STEP_SUMMARY
@@ -74,104 +89,15 @@ jobs:
       - name: Build Docker image
         run: docker build -t ${{ secrets.DOCKER_USERNAME }}/${{ inputs.artifact-name }}:latest .
 
+      - name: Show Docker images
+        run: |
+          echo "Docker image built:"
+          docker images
+
       - name: Push Docker image
         run: docker push ${{ secrets.DOCKER_USERNAME }}/${{ inputs.artifact-name }}:latest
 
-
-  none-deployment2:
-    if: ${{ inputs.deployment == 'none' }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Skipping deployment
-        shell: bash
+      - name: Show Docker images
         run: |
-          echo "Skipping deployment. To deploy, set the deployment environment to a valid value."
-          exit 0
-  
-  none-deployment3:
-    if: ${{ inputs.deployment == 'none' }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Skipping deployment
-        shell: bash
-        run: |
-          echo "Skipping deployment. To deploy, set the deployment environment to a valid value."
-          exit 0
-  none-deployment4:
-    if: ${{ inputs.deployment == 'none' }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Skipping deployment
-        shell: bash
-        run: |
-          echo "Skipping deployment. To deploy, set the deployment environment to a valid value."
-          exit 0
-  none-deployment5:
-    if: ${{ inputs.deployment == 'none' }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Skipping deployment
-        shell: bash
-        run: |
-          echo "Skipping deployment. To deploy, set the deployment environment to a valid value."
-          exit 0
-  none-deployment6:
-    if: ${{ inputs.deployment == 'none' }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Skipping deployment
-        shell: bash
-        run: |
-          echo "Skipping deployment. To deploy, set the deployment environment to a valid value."
-          exit 0
-
-  none-deployment7:
-    if: ${{ inputs.deployment == 'none' }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Skipping deployment
-        shell: bash
-        run: |
-          echo "Skipping deployment. To deploy, set the deployment environment to a valid value."
-          exit 0
-
-
-  none-deployment8:
-    if: ${{ inputs.deployment == 'none' }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Skipping deployment
-        shell: bash
-        run: |
-          echo "Skipping deployment. To deploy, set the deployment environment to a valid value."
-          exit 0
-
-  none-deployment9:
-    if: ${{ inputs.deployment == 'none' }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Skipping deployment
-        shell: bash
-        run: |
-          echo "Skipping deployment. To deploy, set the deployment environment to a valid value."
-          exit 0
-  
-  none-deployment10:
-    if: ${{ inputs.deployment == 'none' }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Skipping deployment
-        shell: bash
-        run: |
-          echo "Skipping deployment. To deploy, set the deployment environment to a valid value."
-          exit 0
-
-  none-deployment11:
-    if: ${{ inputs.deployment == 'none' }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Skipping deployment
-        shell: bash
-        run: |
-          echo "Skipping deployment. To deploy, set the deployment environment to a valid value."
-          exit 0
+          echo "Docker image pushed:"
+          docker images
