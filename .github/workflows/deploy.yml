@@ -23,9 +23,9 @@ on:
         required: true
         description: 'The JSON configuration for the deployment'
         type: string
-    secrets:
-      token:
-        required: true
+    # secrets:
+    #   token:
+    #     required: true
 
 jobs:
   skip:
