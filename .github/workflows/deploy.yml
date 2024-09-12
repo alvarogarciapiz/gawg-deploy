@@ -23,9 +23,6 @@ on:
         required: true
         description: 'The JSON configuration for the deployment'
         type: string
-    # secrets:
-    #   token:
-    #     required: true
 
 jobs:
   none-deployment:
@@ -96,7 +93,7 @@ jobs:
       - name: Build Docker image
         shell: bash
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/${{ inputs.artifact-name }}:latest .
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/${{ inputs.artifact-name }}:${{ fromJson(inputs.config-json).DOCKER_TAG }} .
 
       - name: Show Docker images
         shell: bash
@@ -106,7 +103,7 @@ jobs:
 
       - name: Push Docker image
         shell: bash
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/${{ inputs.artifact-name }}:latest
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/${{ inputs.artifact-name }}:${{ fromJson(inputs.config-json).DOCKER_TAG }}
 
       - name: Summary
         shell: bash
