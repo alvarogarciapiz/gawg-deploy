@@ -190,20 +190,10 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Verify AWS CLI Configuration
-        shell: bash
-        run: |
-          aws sts get-caller-identity
-
-      - name: List S3 Bucket Contents
-        shell: bash
-        run: |
-          aws s3 ls s3://${{ fromJson(inputs.config-json).AWS_S3_BUCKET_NAME }} --region us-east-1
-
       - name: Deploy to s3 bucket
         shell: bash
         run: |
-          aws s3 cp ${{ inputs.artifact-name }} s3://${{ fromJson(inputs.config-json).AWS_S3_BUCKET_NAME }}/${{ inputs.artifact-name }} --region us-east-1
+          aws s3 cp ${{ inputs.artifact-name }} s3://${{ fromJson(inputs.config-json).AWS_S3_BUCKET_NAME }}/ --region us-east-1
 
       - name: Summary
         shell: bash
