@@ -283,6 +283,12 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ fromJson(inputs.config-json).AWS_REGION }}
 
+      - name: Create ECR repository if it does not exist
+        shell: bash
+        run: |
+          aws ecr describe-repositories --repository-names ${{ fromJson(inputs.config-json).AWS_ECR_REPOSITORY }} || \
+          aws ecr create-repository --repository-name ${{ fromJson(inputs.config-json).AWS_ECR_REPOSITORY }}
+
       - name: Deploy to AWS ECR
         shell: bash
         run: |
@@ -295,8 +301,8 @@ jobs:
         run: |
           echo "## Deployment summary"
           echo "## Deployment summary" >> $GITHUB_STEP_SUMMARY
-          echo "✅ Artifact deployed to AWS S3 Bucket."
-          echo "✅ Artifact deployed to AWS S3 Bucket." >> $GITHUB_STEP_SUMMARY
+          echo "✅ Image deployed to AWS ECR."
+          echo "✅ Image deployed to AWS ECR." >> $GITHUB_STEP_SUMMARY
           echo "The artifact ${{ inputs.artifact-name }} is now available in AWS S3 Bucket."
           echo "The artifact ${{ inputs.artifact-name }} is now available in AWS S3 Bucket." >> $GITHUB_STEP_SUMMARY
           echo "URL: https://s3.amazonaws.com/${{ fromJson(inputs.config-json).AWS_S3_BUCKET_NAME }}/${{ inputs.artifact-name }}"
