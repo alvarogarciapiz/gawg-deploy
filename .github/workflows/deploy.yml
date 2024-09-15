@@ -171,7 +171,7 @@ jobs:
             echo "❌ AWS_SECRET_ACCESS_KEY is not set. To set it, go to your repository settings > Secrets > New repository secret" >> $GITHUB_STEP_SUMMARY
             exit 1
           fi
-          if [ -z "${{ secrets.AWS_S3_BUCKET_NAME }}" ]; then
+          if [ -z "${{ fromJson(inputs.config-json).AWS_S3_BUCKET_NAME }}" ]; then
             echo "❌ AWS_S3_BUCKET_NAME is not set. To set it, go to your repository settings > Secrets > New repository secret"
             echo "❌ AWS_S3_BUCKET_NAME is not set. To set it, go to your repository settings > Secrets > New repository secret" >> $GITHUB_STEP_SUMMARY
             exit 1
@@ -180,7 +180,7 @@ jobs:
       - name: Deploy to s3 bucket
         shell: bash
         run: |
-          aws s3 cp ${{ inputs.artifact-name }} s3://${{ secrets.AWS_S3_BUCKET_NAME }}/${{ inputs.artifact-name }}
+          aws s3 cp ${{ inputs.artifact-name }} s3://${{ fromJson(inputs.config-json).AWS_S3_BUCKET_NAME }}/${{ inputs.artifact-name }}
 
       - name: Summary
         shell: bash
@@ -191,5 +191,5 @@ jobs:
           echo "✅ Artifact deployed to AWS S3 Bucket." >> $GITHUB_STEP_SUMMARY
           echo "The artifact ${{ inputs.artifact-name }} is now available in AWS S3 Bucket."
           echo "The artifact ${{ inputs.artifact-name }} is now available in AWS S3 Bucket." >> $GITHUB_STEP_SUMMARY
-          echo "URL: https://s3.amazonaws.com/${{ secrets.AWS_S3_BUCKET_NAME }}/${{ inputs.artifact-name }}"
-          echo "URL: https://s3.amazonaws.com/${{ secrets.AWS_S3_BUCKET_NAME }}/${{ inputs.artifact-name }}" >> $GITHUB_STEP_SUMMARY
+          echo "URL: https://s3.amazonaws.com/${{ fromJson(inputs.config-json).AWS_S3_BUCKET_NAME }}/${{ inputs.artifact-name }}"
+          echo "URL: https://s3.amazonaws.com/${{ fromJson(inputs.config-json).AWS_S3_BUCKET_NAME }}/${{ inputs.artifact-name }}" >> $GITHUB_STEP_SUMMARY
