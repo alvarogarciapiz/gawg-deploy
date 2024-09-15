@@ -305,5 +305,5 @@ jobs:
           echo "✅ Image deployed to AWS ECR." >> $GITHUB_STEP_SUMMARY
           echo "The Docker image ${{ fromJson(inputs.config-json).AWS_ECR_REPOSITORY }}:${{ fromJson(inputs.config-json).DOCKER_TAG }} is now available in AWS ECR."
           echo "The Docker image ${{ fromJson(inputs.config-json).AWS_ECR_REPOSITORY }}:${{ fromJson(inputs.config-json).DOCKER_TAG }} is now available in AWS ECR." >> $GITHUB_STEP_SUMMARY
-          echo "URL: https://${{ fromJson(inputs.config-json).AWS_ECR_REGISTRY }}/${{ fromJson(inputs.config-json).AWS_ECR_REPOSITORY }}:${{ fromJson(inputs.config-json).DOCKER_TAG }}"
-          echo "URL: https://${{ fromJson(inputs.config-json).AWS_ECR_REGISTRY }}/${{ fromJson(inputs.config-json).AWS_ECR_REPOSITORY }}:${{ fromJson(inputs.config-json).DOCKER_TAG }}" >> $GITHUB_STEP_SUMMARY
+          echo "https://${{ fromJson(inputs.config-json).AWS_REGION }}.console.aws.amazon.com/ecr/private-registry/repositories?region=${{ fromJson(inputs.config-json).AWS_REGION }}"
+          echo "https://${{ fromJson(inputs.config-json).AWS_REGION }}.console.aws.amazon.com/ecr/private-registry/repositories?region=${{ fromJson(inputs.config-json).AWS_REGION }}" >> $GITHUB_STEP_SUMMARY
