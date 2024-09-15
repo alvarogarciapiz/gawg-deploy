@@ -286,15 +286,15 @@ jobs:
       - name: Create ECR repository if it does not exist
         shell: bash
         run: |
-          aws ecr describe-repositories --repository-names ${{ fromJson(inputs.config-json).AWS_ECR_REGISTRY }} || \
-          aws ecr create-repository --repository-name ${{ fromJson(inputs.config-json).AWS_ECR_REGISTRY }}
+          aws ecr describe-repositories --repository-names ${{ fromJson(inputs.config-json).AWS_ECR_REPOSITORY }} || \
+          aws ecr create-repository --repository-name ${{ fromJson(inputs.config-json).AWS_ECR_REPOSITORY }}
 
       - name: Deploy to AWS ECR
         shell: bash
         run: |
           aws ecr get-login-password --region ${{ fromJson(inputs.config-json).AWS_REGION }} | docker login --username AWS --password-stdin ${{ fromJson(inputs.config-json).AWS_ECR_REGISTRY }}
-          docker build -t ${{ fromJson(inputs.config-json).AWS_ECR_REGISTRY }}/${{ inputs.artifact-name }}:${{ fromJson(inputs.config-json).DOCKER_TAG }} .
-          docker push ${{ fromJson(inputs.config-json).AWS_ECR_REGISTRY }}/${{ inputs.artifact-name }}:${{ fromJson(inputs.config-json).DOCKER_TAG }}
+          docker build -t ${{ fromJson(inputs.config-json).AWS_ECR_REGISTRY }}/${{ fromJson(inputs.config-json).AWS_ECR_REPOSITORY }}:${{ fromJson(inputs.config-json).DOCKER_TAG }} .
+          docker push ${{ fromJson(inputs.config-json).AWS_ECR_REGISTRY }}/${{ fromJson(inputs.config-json).AWS_ECR_REPOSITORY }}:${{ fromJson(inputs.config-json).DOCKER_TAG }}
 
       - name: Summary
         shell: bash
