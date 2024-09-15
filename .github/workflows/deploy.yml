@@ -286,8 +286,8 @@ jobs:
       - name: Create ECR repository if it does not exist
         shell: bash
         run: |
-          aws ecr describe-repositories --repository-names ${{ fromJson(inputs.config-json).AWS_ECR_REPOSITORY }} || \
-          aws ecr create-repository --repository-name ${{ fromJson(inputs.config-json).AWS_ECR_REPOSITORY }}
+          aws ecr describe-repositories --repository-names ${{ fromJson(inputs.config-json).AWS_ECR_REGISTRY }}/${{ inputs.artifact-name }} || \
+          aws ecr create-repository --repository-name ${{ fromJson(inputs.config-json).AWS_ECR_REGISTRY }}/${{ inputs.artifact-name }}
 
       - name: Deploy to AWS ECR
         shell: bash
@@ -303,7 +303,7 @@ jobs:
           echo "## Deployment summary" >> $GITHUB_STEP_SUMMARY
           echo "✅ Image deployed to AWS ECR."
           echo "✅ Image deployed to AWS ECR." >> $GITHUB_STEP_SUMMARY
-          echo "The artifact ${{ inputs.artifact-name }} is now available in AWS S3 Bucket."
-          echo "The artifact ${{ inputs.artifact-name }} is now available in AWS S3 Bucket." >> $GITHUB_STEP_SUMMARY
-          echo "URL: https://s3.amazonaws.com/${{ fromJson(inputs.config-json).AWS_S3_BUCKET_NAME }}/${{ inputs.artifact-name }}"
-          echo "URL: https://s3.amazonaws.com/${{ fromJson(inputs.config-json).AWS_S3_BUCKET_NAME }}/${{ inputs.artifact-name }}" >> $GITHUB_STEP_SUMMARY
+          echo "The Docker image ${{ fromJson(inputs.config-json).AWS_ECR_REPOSITORY }}:${{ fromJson(inputs.config-json).DOCKER_TAG }} is now available in AWS ECR."
+          echo "The Docker image ${{ fromJson(inputs.config-json).AWS_ECR_REPOSITORY }}:${{ fromJson(inputs.config-json).DOCKER_TAG }} is now available in AWS ECR." >> $GITHUB_STEP_SUMMARY
+          echo "URL: https://${{ fromJson(inputs.config-json).AWS_ECR_REGISTRY }}/${{ fromJson(inputs.config-json).AWS_ECR_REPOSITORY }}:${{ fromJson(inputs.config-json).DOCKER_TAG }}"
+          echo "URL: https://${{ fromJson(inputs.config-json).AWS_ECR_REGISTRY }}/${{ fromJson(inputs.config-json).AWS_ECR_REPOSITORY }}:${{ fromJson(inputs.config-json).DOCKER_TAG }}" >> $GITHUB_STEP_SUMMARY
