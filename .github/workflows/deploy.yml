@@ -276,17 +276,6 @@ jobs:
           echo "Files in artifact:"
           ls -lah
 
-      - name: Build Docker image
-        shell: bash
-        run: |
-          docker build -t ${{ fromJson(inputs.config-json).DOCKER_REPOSITORY }}/${{ inputs.artifact-name }}:${{ fromJson(inputs.config-json).DOCKER_TAG }} .
-
-      - name: Show Docker images
-        shell: bash
-        run: |
-          echo "Docker image built:"
-          docker images
-
       - name: Set up AWS CLI
         uses: aws-actions/configure-aws-credentials@main
         with:
