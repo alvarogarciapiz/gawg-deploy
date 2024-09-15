@@ -19,9 +19,9 @@ jobs:
       - name: Delete all tags from remote
         shell: bash
         run: |
-          git tag -l | xargs -I {} git tag -d {}
-
+          git fetch --tags
           git tag -l | xargs -I {} git push origin --delete {}
+          git tag -l | xargs -I {} git tag -d {}
 
       - name: Delete all releases
         env:
