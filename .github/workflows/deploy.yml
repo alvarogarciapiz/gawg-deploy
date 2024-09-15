@@ -89,7 +89,7 @@ jobs:
         run: |
           if [ -z "${{ fromJson(inputs.config-json).DOCKER_TAG }}" ]; then
             echo "❌ DOCKER_TAG is not set. To set it, go to your  workflow_config.yml file and set the DOCKER_TAG variable."
-            echo "❌ DOCKER_TAG is not set. To set it, go to your  workflow_config.yml file and set the DOCKER_TAG variable" >> $GITHUB_STEP_SUMMARY
+            echo "❌ DOCKER_TAG is not set. To set it, go to your  workflow_config.yml file and set the DOCKER_TAG variable." >> $GITHUB_STEP_SUMMARY
             exit 1
           fi
 
@@ -154,7 +154,7 @@ jobs:
       - name: Show artifact files
         shell: bash
         run: |
-          echo "⚠️ Make sure the artifact files are correct and there is a Dockerfile inside it."
+          echo "⚠️ Make sure the artifact files are correct."
           echo "Files in artifact:"
           ls -lah
 
@@ -181,8 +181,8 @@ jobs:
             echo "AWS_SECRET_ACCESS_KEY is set."
           fi
           if [ -z "${{ fromJson(inputs.config-json).AWS_S3_BUCKET_NAME }}" ]; then
-            echo "❌ AWS_S3_BUCKET_NAME is not set. To set it, go to your repository settings > Secrets > New repository secret"
-            echo "❌ AWS_S3_BUCKET_NAME is not set. To set it, go to your repository settings > Secrets > New repository secret" >> $GITHUB_STEP_SUMMARY
+            echo "❌ AWS_S3_BUCKET_NAME is not set. To set it, go to your workflow_config.yml file and set the AWS_S3_BUCKET_NAME variable."
+            echo "❌ AWS_S3_BUCKET_NAME is not set. To set it, go to your workflow_config.yml file and set the AWS_S3_BUCKET_NAME variable." >> $GITHUB_STEP_SUMMARY
             exit 1
           else
             echo "AWS_S3_BUCKET_NAME is set."
@@ -199,6 +199,107 @@ jobs:
         shell: bash
         run: |
           aws s3 cp ${{ inputs.artifact-name }}.zip s3://${{ fromJson(inputs.config-json).AWS_S3_BUCKET_NAME }}/ --region us-east-1
+
+      - name: Summary
+        shell: bash
+        run: |
+          echo "## Deployment summary"
+          echo "## Deployment summary" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Artifact deployed to AWS S3 Bucket."
+          echo "✅ Artifact deployed to AWS S3 Bucket." >> $GITHUB_STEP_SUMMARY
+          echo "The artifact ${{ inputs.artifact-name }} is now available in AWS S3 Bucket."
+          echo "The artifact ${{ inputs.artifact-name }} is now available in AWS S3 Bucket." >> $GITHUB_STEP_SUMMARY
+          echo "URL: https://s3.amazonaws.com/${{ fromJson(inputs.config-json).AWS_S3_BUCKET_NAME }}/${{ inputs.artifact-name }}"
+          echo "URL: https://s3.amazonaws.com/${{ fromJson(inputs.config-json).AWS_S3_BUCKET_NAME }}/${{ inputs.artifact-name }}" >> $GITHUB_STEP_SUMMARY
+
+
+  aws-ecr:
+    if: ${{ inputs.deployment == 'aws-ecr' }}
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Deploy to AWS ECR
+        shell: bash
+        run: |
+          echo "Deploying to AWS ECR"
+          echo "The selected deployment is AWS-ECR."
+          echo "To deploy to AWS ECR, make sure you have an ECR configured."
+
+      - name: Check AWS Credentials
+        shell: bash
+        run: |
+          if [ -z "${{ secrets.AWS_ACCESS_KEY_ID }}" ]; then
+            echo "❌ AWS_ACCESS_KEY_ID is not set. To set it, go to your repository settings > Secrets > New repository secret"
+            echo "❌ AWS_ACCESS_KEY_ID is not set. To set it, go to your repository settings > Secrets > New repository secret" >> $GITHUB_STEP_SUMMARY
+            exit 1
+          else
+            echo "AWS_ACCESS_KEY_ID is set."
+          fi
+          if [ -z "${{ secrets.AWS_SECRET_ACCESS_KEY }}" ]; then
+            echo "❌ AWS_SECRET_ACCESS_KEY is not set. To set it, go to your repository settings > Secrets > New repository secret"
+            echo "❌ AWS_SECRET_ACCESS_KEY is not set. To set it, go to your repository settings > Secrets > New repository secret" >> $GITHUB_STEP_SUMMARY
+            exit 1
+          else
+            echo "AWS_SECRET_ACCESS_KEY is set."
+          fi
+          if [ -z "${{ fromJson(inputs.config-json).AWS_ECR_REGISTRY }}" ]; then
+            echo "❌ AWS_ECR_REGISTRY is not set. To set it, go to your workflow_config.yml file and set the AWS_ECR_REGISTRY variable."
+            echo "❌ AWS_ECR_REGISTRY is not set. To set it, go to your workflow_config.yml file and set the AWS_ECR_REGISTRY variable." >> $GITHUB_STEP_SUMMARY
+            exit 1
+          else
+            echo "AWS_ECR_REGISTRY is set."
+          fi
+          if [ -z "${{ fromJson(inputs.config-json).DOCKER_TAG }}" ]; then
+            echo "❌ DOCKER_TAG is not set. To set it, go to your  workflow_config.yml file and set the DOCKER_TAG variable."
+            echo "❌ DOCKER_TAG is not set. To set it, go to your  workflow_config.yml file and set the DOCKER_TAG variable." >> $GITHUB_STEP_SUMMARY
+            exit 1
+          else
+            echo "DOCKER_TAG is set."
+          fi
+          if [ -z "${{ fromJson(inputs.config-json).AWS_REGION }}" ]; then
+            echo "❌ DOCKER_TAG is not set. To set it, go to your  workflow_config.yml file and set the AWS_REGION variable."
+            echo "❌ DOCKER_TAG is not set. To set it, go to your  workflow_config.yml file and set the AWS_REGION variable." >> $GITHUB_STEP_SUMMARY
+            exit 1
+          else
+            echo "AWS_REGION is set."
+          fi
+
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.artifact-name }}
+
+      - name: Show artifact files
+        shell: bash
+        run: |
+          echo "⚠️ Make sure the artifact files are correct and there is a Dockerfile inside it."
+          echo "Files in artifact:"
+          ls -lah
+
+      - name: Build Docker image
+        shell: bash
+        run: |
+          docker build -t ${{ fromJson(inputs.config-json).DOCKER_REPOSITORY }}/${{ inputs.artifact-name }}:${{ fromJson(inputs.config-json).DOCKER_TAG }} .
+
+      - name: Show Docker images
+        shell: bash
+        run: |
+          echo "Docker image built:"
+          docker images
+
+      - name: Set up AWS CLI
+        uses: aws-actions/configure-aws-credentials@main
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ fromJson(inputs.config-json).AWS_REGION }}
+
+      - name: Deploy to AWS ECR
+        shell: bash
+        run: |
+          aws ecr get-login-password --region ${{ fromJson(inputs.config-json).AWS_REGION }} | docker login --username AWS --password-stdin ${{ fromJson(inputs.config-json).AWS_ECR_REGISTRY }}
+          docker build -t ${{ fromJson(inputs.config-json).AWS_ECR_REGISTRY }}/${{ inputs.artifact-name }}:${{ fromJson(inputs.config-json).DOCKER_TAG }} .
+          docker push ${{ fromJson(inputs.config-json).AWS_ECR_REGISTRY }}/${{ inputs.artifact-name }}:${{ fromJson(inputs.config-json).DOCKER_TAG }}
 
       - name: Summary
         shell: bash
