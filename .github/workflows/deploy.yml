@@ -157,6 +157,11 @@ jobs:
           echo "⚠️ Make sure the artifact files are correct and there is a Dockerfile inside it."
           echo "Files in artifact:"
           ls -lah
+
+      - name: Generate zip file
+        shell: bash
+        run: |
+          zip -r ${{ inputs.artifact-name }}.zip .
       
       - name: Check AWS Credentials
         shell: bash
@@ -184,7 +189,7 @@ jobs:
           fi
 
       - name: Set up AWS CLI
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@main
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -193,7 +198,7 @@ jobs:
       - name: Deploy to s3 bucket
         shell: bash
         run: |
-          aws s3 cp ${{ inputs.artifact-name }} s3://${{ fromJson(inputs.config-json).AWS_S3_BUCKET_NAME }}/ --region us-east-1
+          aws s3 cp ${{ inputs.artifact-name }}.zip s3://${{ fromJson(inputs.config-json).AWS_S3_BUCKET_NAME }}/ --region us-east-1
 
       - name: Summary
         shell: bash
