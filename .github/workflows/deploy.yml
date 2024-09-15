@@ -165,22 +165,38 @@ jobs:
             echo "❌ AWS_ACCESS_KEY_ID is not set. To set it, go to your repository settings > Secrets > New repository secret"
             echo "❌ AWS_ACCESS_KEY_ID is not set. To set it, go to your repository settings > Secrets > New repository secret" >> $GITHUB_STEP_SUMMARY
             exit 1
+          else
+            echo "AWS_ACCESS_KEY_ID is set."
           fi
           if [ -z "${{ secrets.AWS_SECRET_ACCESS_KEY }}" ]; then
             echo "❌ AWS_SECRET_ACCESS_KEY is not set. To set it, go to your repository settings > Secrets > New repository secret"
             echo "❌ AWS_SECRET_ACCESS_KEY is not set. To set it, go to your repository settings > Secrets > New repository secret" >> $GITHUB_STEP_SUMMARY
             exit 1
+          else
+            echo "AWS_SECRET_ACCESS_KEY is set."
           fi
           if [ -z "${{ fromJson(inputs.config-json).AWS_S3_BUCKET_NAME }}" ]; then
             echo "❌ AWS_S3_BUCKET_NAME is not set. To set it, go to your repository settings > Secrets > New repository secret"
             echo "❌ AWS_S3_BUCKET_NAME is not set. To set it, go to your repository settings > Secrets > New repository secret" >> $GITHUB_STEP_SUMMARY
             exit 1
+          else
+            echo "AWS_S3_BUCKET_NAME is set."
           fi
+
+      - name: Verify AWS CLI Configuration
+        shell: bash
+        run: |
+          aws sts get-caller-identity
+
+      - name: List S3 Bucket Contents
+        shell: bash
+        run: |
+          aws s3 ls s3://${{ fromJson(inputs.config-json).AWS_S3_BUCKET_NAME }} --region us-east-1
 
       - name: Deploy to s3 bucket
         shell: bash
         run: |
-          aws s3 cp ${{ inputs.artifact-name }} s3://${{ fromJson(inputs.config-json).AWS_S3_BUCKET_NAME }}/${{ inputs.artifact-name }}
+          aws s3 cp ${{ inputs.artifact-name }} s3://${{ fromJson(inputs.config-json).AWS_S3_BUCKET_NAME }}/${{ inputs.artifact-name }} --region us-east-1
 
       - name: Summary
         shell: bash
